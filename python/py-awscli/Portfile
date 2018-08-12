@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-awscli
-version             1.15.16
+version             1.15.76
 platforms           darwin
 supported_archs     noarch
 license             Apache-2
@@ -17,9 +17,9 @@ homepage            https://aws.amazon.com/cli/
 master_sites        pypi:a/awscli
 distname            awscli-${version}
 
-checksums           rmd160 41a691db4389b5fadfea6a6dfe53b19217934dc1 \
-                    sha256 0c471b208505ac0dbc967ba2e485fe278ca376005aa8d92909ef8f160731f4e8 \
-                    size   593977
+checksums           rmd160 890766949cfdeec1db37a3622c58941b62e080d9 \
+                    sha256 7d84a54fd241027c01d8bc909cc08adadd7b1e689f1fcb83adaa66506bd44551 \
+                    size   614496
 
 python.versions     27 35 36
 
@@ -52,5 +52,32 @@ if {${name} ne ${subport}} {
              ${worksrcpath}/${subport}
     }
 
+    set bash_compl_path ${prefix}/etc/bash_completion.d
+    set zsh_compl_path ${prefix}/share/zsh/site-functions
+    set examples_path ${prefix}/share/${name}
+
+    post-destroot {
+        # bash completion
+        xinstall -d ${destroot}${bash_compl_path}
+        xinstall -m 0644 ${worksrcpath}/bin/aws_bash_completer \
+            ${destroot}${bash_compl_path}
+
+        # zsh completion
+        xinstall -d ${destroot}${zsh_compl_path}
+        xinstall -m 0644 ${worksrcpath}/bin/aws_zsh_completer.sh \
+            ${filespath}/_aws \
+            ${destroot}${zsh_compl_path}
+
+        # Examples
+        xinstall -d ${destroot}${examples_path}
+        move ${worksrcpath}/awscli/examples \
+            ${destroot}${examples_path}
+    }
+
     livecheck.type      none
+
+    notes "
+    Command-line examples have been installed to:
+      ${examples_path}/examples
+    "
 }

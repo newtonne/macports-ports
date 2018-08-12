@@ -1,0 +1,10 @@
+#compdef aws
+
+# Define an aws completion function which simply sources
+# the aws_zsh_completer.sh script shipped with awscli
+
+_aws () {
+    local e
+    e=$(dirname ${funcsourcetrace[1]%:*})/aws_zsh_completer.sh
+    if [[ -f $e ]]; then source $e; fi
+}
